@@ -22,10 +22,12 @@ contract MyEpicNFT is ERC721URIStorage {
   string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
 
   // I create three arrays, each with their own theme of random words.
-  // Pick some random funny words, names of anime characters, foods you like, whatever! 
+  // Pick some random funny words, names of anime characters, foods you like, whatever!
   string[] firstWords = ["Gooey","Melty","Creamy","Sweet","Bitter","Roasted","Fruity","Buttery","Syrupy","Warm","Tart","Raw","Soft","Candied","Iced","Glazed","Caramelized","Drizzled","Sprinkled","Frosted"];
   string[] secondWords = ["Peanut butter", "Vanilla", "Raspberry","Strawberry","Orange","Banana cream","Lemon","Lavender ","Mint Chocolate","Dark Chocolate","Milk Chocolate","White Chocolate","Espresso","Cacao","Toffee","Caramel","Fudge","Red Velvet"];
   string[] thirdWords = ["Truffle", "Ganache", "Morsel", "Cake pop", "Delight", "Treat", "Butter Cream", "Caramel"];
+
+  event NewEpicNFTMinted(address sender, uint256 tokenId);
 
   // We need to pass the name of our NFTs token and it's symbol.
   constructor() ERC721 ("TruffleNFT", "TRUFFLE") {
@@ -34,7 +36,7 @@ contract MyEpicNFT is ERC721URIStorage {
 
   // I create a function to randomly pick a word from each array.
   function pickRandomFirstWord(uint256 tokenId) public view returns (string memory) {
-    // I seed the random generator. More on this in the lesson. 
+    // I seed the random generator. More on this in the lesson.
     uint256 rand = random(string(abi.encodePacked("FIRST_WORD", Strings.toString(tokenId))));
     // Squash the # between 0 and the length of the array to avoid going out of bounds.
     rand = rand % firstWords.length;
@@ -94,12 +96,13 @@ contract MyEpicNFT is ERC721URIStorage {
     console.log("--------------------\n");
 
     _safeMint(msg.sender, newItemId);
-    
+
     // Update your URI!!!
     _setTokenURI(newItemId, finalTokenUri);
-  
+
     _tokenIds.increment();
     console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+      emit NewEpicNFTMinted(msg.sender, newItemId);
   }
 }
 
